@@ -1,0 +1,15 @@
+<header>
+  <h1>Instagram Reels Publishing API Sample App</h1>
+</header>
+<div class="button-group">
+  <button onclick="location.href='/login'">Log In with Facebook</button>
+  <button onclick="location.href='/logout'">Log Out</button>
+  {{#if isActive}}
+    <div class="alert-error">
+      <span
+        class="closebtn"
+        onclick="this.parentElement.style.display='none';"
+      >&times;</span>Error Occurred! Please try again.
+    </div>
+  {{/if}}
+</div>
