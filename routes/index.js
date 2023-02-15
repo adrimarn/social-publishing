@@ -12,18 +12,17 @@ const SCOPES = [
 ];
 const STRINGIFIED_SCOPES = SCOPES.join("%2c");
 
-router.get("/", async (req, res, next) => {
+router.get("/", (req, res) => {
   res.render("index", { title: "Instagram" });
 });
 
-router.get("/login", async (req, res) => {
-  res.redirect(
-    `https://www.facebook.com/dialog/oauth?app_id=${APP_ID}&scope=${STRINGIFIED_SCOPES}&client_id=${APP_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`
-  );
+router.get("/login", (req, res) => {
+  const url = `https://www.facebook.com/dialog/oauth?app_id=${APP_ID}&scope=${STRINGIFIED_SCOPES}&client_id=${APP_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+  res.redirect(url);
 });
 
-router.get("/callback", async function (req, res) {
-  const code = req.query.code;
+router.get("/callback", async (req, res) => {
+  const { code } = req.query;
   const uri = `https://graph.facebook.com/oauth/access_token?client_id=${APP_ID}&redirect_uri=${REDIRECT_URI}&client_secret=${API_SECRET}&code=${code}`;
   const response = await fetch(uri);
   const data = await response.json();
@@ -32,18 +31,25 @@ router.get("/callback", async function (req, res) {
   res.redirect("/create");
 });
 
-router.get("/create", async function (req, res) {
+router.get("/create", async (req, res) => {
   const { access_token } = req.session;
-  if (!access_token) res.redirect("/");
+  if (!access_token) {
+    res.redirect("/");
+    return;
+  }
   try {
     const uri = `https://graph.facebook.com/v16.0/me/accounts?access_token=${access_token}`;
     const response = await fetch(uri);
     const data = await response.json();
-    const { data: pages } = data;
+    const { data: pages, error } = data;
+    if (error) {
+      res.render("index", { error: error.message });
+      return;
+    }
     res.render("create", { pages });
   } catch (err) {
     res.render("index", {
-      error: `There was an error with the request: ${err}`,
+      error: `${err}`,
     });
   }
 });
@@ -51,18 +57,16 @@ router.get("/create", async function (req, res) {
 const getInstagramUserId = async (pageId, access_token) => {
   const igUserUri = `https://graph.facebook.com/v16.0/${pageId}?fields=instagram_business_account&access_token=${access_token}`;
   const igUserData = await fetch(igUserUri);
-  const igUser = await igUserData.json();
   const {
     instagram_business_account: { id },
-  } = igUser;
+  } = await igUserData.json();
   return id;
 };
 
 const createMediaContainer = async (igUserId, videoUrl, access_token) => {
   const igMediaUri = `https://graph.facebook.com/v16.0/${igUserId}/media?media_type=REELS&video_url=${videoUrl}&access_token=${access_token}`;
   const igMediaData = await fetch(igMediaUri, { method: "POST" });
-  const igMedia = await igMediaData.json();
-  const { id: igMediaContainerId } = igMedia;
+  const { id: igMediaContainerId } = await igMediaData.json();
   return igMediaContainerId;
 };
 
@@ -113,10 +117,10 @@ router.post("/publish", async function (req, res) {
     const igMediaPublish = await igMediaPublishData.json();
     const { id: igMediaId } = igMediaPublish;
 
-    res.redirect("/");
+    res.render("create", { success: "Video published successfully" });
   } catch (err) {
-    res.render("index", {
-      error: `There was an error with the request: ${err}`,
+    res.render("create", {
+      error: err,
     });
   }
 });

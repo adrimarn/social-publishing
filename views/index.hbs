@@ -1,15 +1,9 @@
-<header>
-  <h1>Instagram Reels Publishing API Sample App</h1>
+<header class="py-4 flex justify-center space-x-4">
+  <h1 class="text-3xl font-bold">Instagram Reels Publishing</h1>
 </header>
-<div class="button-group">
-  <button onclick="location.href='/login'">Log In with Facebook</button>
-  <button onclick="location.href='/logout'">Log Out</button>
-  {{#if isActive}}
-    <div class="alert-error">
-      <span
-        class="closebtn"
-        onclick="this.parentElement.style.display='none';"
-      >&times;</span>Error Occurred! Please try again.
-    </div>
-  {{/if}}
+<div class="flex justify-center space-x-4 py-4">
+  <button
+    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+    onclick="location.href='/login'"
+  >Log In with Facebook</button>
 </div>

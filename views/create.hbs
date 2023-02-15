@@ -1,21 +1,48 @@
-<form action="/publish" name="uploadForm" id="uploadForm" method="POST">
-  <b>Select an Page associated with Instagram Business Account ID to publish
-    reel to</b>
-  <select name="pageId" id="pageId">
-    {{#each pages}}
-      <option value="{{id}}">{{name}}</option>
-    {{/each}}
-  </select>
-  <input type="text" placeholder="Enter video url" name="videoUrl" />
-  <input type="text" placeholder="Enter caption (optional)" name="caption" />
-  <input type="submit" value="Upload Reel" />
-  {{#if success}}
-    <div class="success">
-      <span
-        class="closebtn"
-        onclick="this.parentElement.style.display='none';"
-      >&times;</span>
-      {{success}}
-    </div>
-  {{/if}}
+<form
+  action="/publish"
+  name="uploadForm"
+  id="uploadForm"
+  method="POST"
+  class="p-4 bg-white rounded-lg shadow-md w-1/2 mx-auto"
+>
+  <div class="mb-2">
+    <label for="pageId" class="block font-semibold">Select a Page associated
+      with Instagram Business Account ID to publish reel to:</label>
+    <select
+      name="pageId"
+      id="pageId"
+      class="w-full py-2 px-3 border rounded-md"
+    >
+      {{#each pages}}
+        <option value="{{id}}">{{name}}</option>
+      {{/each}}
+    </select>
+  </div>
+  <div class="mb-2">
+    <label for="videoUrl" class="block font-semibold">Enter video url:</label>
+    <input
+      type="text"
+      placeholder="Enter video url"
+      name="videoUrl"
+      id="videoUrl"
+      class="w-full py-2 px-3 border rounded-md"
+    />
+  </div>
+  <div class="mb-2">
+    <label for="caption" class="block font-semibold">Enter caption (optional):</label>
+    <input
+      type="text"
+      placeholder="Enter caption (optional)"
+      name="caption"
+      id="caption"
+      class="w-full py-2 px-3 border rounded-md"
+    />
+  </div>
+  <div class="mb-2">
+    <input
+      type="submit"
+      value="Upload Reel"
+      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md"
+    />
+  </div>
 </form>
