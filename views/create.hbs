@@ -1,20 +1,20 @@
 <form
-  action="/publish"
+  action="/insta/publish"
   name="uploadForm"
   id="uploadForm"
   method="POST"
   class="p-4 bg-white rounded-lg shadow-md w-1/2 mx-auto"
 >
   <div class="mb-2">
-    <label for="pageId" class="block font-semibold">Select a Page associated
+    <label for="igUserId" class="block font-semibold">Select a Page associated
       with Instagram Business Account ID to publish reel to:</label>
     <select
-      name="pageId"
-      id="pageId"
+      name="igUserId"
+      id="igUserId"
       class="w-full py-2 px-3 border rounded-md"
     >
-      {{#each pages}}
-        <option value="{{id}}">{{name}}</option>
+      {{#each accounts}}
+        <option value="{{id}}">{{name}}: {{username}}</option>
       {{/each}}
     </select>
   </div>
