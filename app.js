@@ -8,6 +8,7 @@ require("dotenv").config();
 
 const indexRouter = require("./routes/index");
 const instagramRouter = require("./routes/instagram");
+const tiktokRouter = require("./routes/tiktok");
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use(
 
 app.use("/", indexRouter);
 app.use("/insta", instagramRouter);
+app.use("/tiktok", tiktokRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -47,7 +49,7 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render("error");
+    res.render("index");
 });
 
 module.exports = app;
