@@ -1,5 +1,4 @@
 const express = require("express");
-const fs = require("fs");
 const router = express.Router();
 const FormData = require("form-data");
 const axios = require("axios");
@@ -74,25 +73,34 @@ router.get("/upload", async (req, res) => {
 router.post("/upload", async (req, res) => {
   try {
     const { access_token, open_id } = req.session;
+
     if (!access_token) {
       res.redirect("/");
       return;
     }
+
     const { videoUrl } = req.body;
-    const videoStream = await axios({
-      method: "GET",
+
+    // Use Axios to download the video from the specified URL as a stream
+    const { data: videoStream } = await axios.get(videoUrl, {
       responseType: "stream",
-      url: videoUrl,
     });
-    const form = new FormData();
-    form.append("video", videoStream.data);
-    const uri = `https://open-api.tiktok.com/share/video/upload/?access_token=${access_token}&open_id=${open_id}`;
-    const { data } = await axios.post(uri, form, {
+
+    // Create a new FormData object and append the video stream to it
+    const formData = new FormData();
+    formData.append("video", videoStream);
+
+    // Construct the API endpoint URL using the access token and open ID
+    const uploadUrl = `https://open-api.tiktok.com/share/video/upload/?access_token=${access_token}&open_id=${open_id}`;
+
+    // Use Axios to upload the video to TikTok's servers
+    const { data: responseData } = await axios.post(uploadUrl, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
-        ...form.getHeaders(),
+        ...formData.getHeaders(),
       },
     });
+
     res.render("tiktok", {
       user: req.session.user,
       success: `Video uploaded successfully`,

@@ -80,6 +80,14 @@ async function getInstagramUsernameForAccount(access_token, accountId) {
   return username;
 }
 
+/**
+ * Get the Instagram user ID associated with a Facebook Page ID using the given access token.
+ *
+ * @async
+ * @param {string} pageId - The ID of the Facebook Page.
+ * @param {string} access_token - The access token to use for making API requests.
+ * @returns {Promise<string>} A Promise that resolves with the Instagram user ID.
+ */
 const getInstagramUserId = async (pageId, access_token) => {
   const igUserUri = `https://graph.facebook.com/${API_VERSION}/${pageId}?fields=instagram_business_account&access_token=${access_token}`;
   const igUserData = await fetch(igUserUri);
@@ -90,9 +98,9 @@ const getInstagramUserId = async (pageId, access_token) => {
 };
 
 module.exports = {
-    createMediaContainer,
-    checkUploadStatus,
-    getAccountsFromFacebookApi,
-    getInstagramUsernameForAccount,
-    getInstagramUserId,
+  createMediaContainer,
+  checkUploadStatus,
+  getAccountsFromFacebookApi,
+  getInstagramUsernameForAccount,
+  getInstagramUserId,
 };
