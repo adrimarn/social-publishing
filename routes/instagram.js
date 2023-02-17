@@ -1,7 +1,6 @@
 const express = require("express");
 const {
   getAccountsFromFacebookApi,
-  getInstagramUsernameForAccount,
   createMediaContainer,
   checkUploadStatus,
 } = require("../utils/instagram");
@@ -63,21 +62,17 @@ router.get("/publish", async (req, res) => {
     // Get a list of accounts from the Facebook API using the access token
     const accountData = await getAccountsFromFacebookApi(access_token);
 
-    // Filter the list of accounts to only include those with an associated Instagram account
-    const accountList = accountData.filter(
-      ({ instagram_business_account }) => instagram_business_account
-    );
+    // Filter the list of accounts to only include those with an associated Instagram account,
+    // and map each account to an object with only the relevant fields
+    // Store the account list in the session
+    req.session.accounts = accountData
+      .filter(({ instagram_business_account }) => instagram_business_account)
+      .map(({ name, instagram_business_account: { id, username } }) => ({
+        id, // Instagram Business Account ID
+        name, // Facebook Page name
+        username, // Instagram username
+      }));
 
-    // Create an empty array in the user's session to store Instagram accounts
-    req.session.accounts = [];
-
-    // Use Promise.allSettled to asynchronously retrieve the usernames for each Instagram account
-    await Promise.allSettled(
-      accountList.map(async ({ name, instagram_business_account: { id } }) => {
-        const username = await getInstagramUsernameForAccount(access_token, id);
-        req.session.accounts.push({ id, name, username });
-      })
-    );
     res.render("insta", { accounts: req.session.accounts });
   } catch (err) {
     console.log(err);

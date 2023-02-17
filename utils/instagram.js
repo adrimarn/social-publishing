@@ -56,7 +56,7 @@ const checkUploadStatus = async (igMediaContainerId, access_token) => {
  * @throws {Error} If an error occurs while retrieving the data from Facebook's Graph API.
  */
 async function getAccountsFromFacebookApi(access_token) {
-  const uri = `https://graph.facebook.com/${API_VERSION}/me/accounts?fields=instagram_business_account,name&access_token=${access_token}`;
+  const uri = `https://graph.facebook.com/${API_VERSION}/me/accounts?fields=instagram_business_account{id,name,username},name&access_token=${access_token}`;
   const accountResponse = await fetch(uri);
   const { data: accountData, error } = await accountResponse.json();
   if (error) {
